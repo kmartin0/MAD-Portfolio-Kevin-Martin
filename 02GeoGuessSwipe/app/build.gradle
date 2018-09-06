@@ -38,4 +38,7 @@ dependencies {
 
     // Floating Action Button
     implementation "com.android.support:design:$android_support_version"
+
+    // Glide
+    implementation 'com.github.bumptech.glide:glide:4.8.0'
 }
