@@ -8,26 +8,42 @@
         android:id="@+id/checkBoxBucketItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_small"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tvBucketItemTitle"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_medium"
         android:layout_marginStart="@dimen/margin_medium"
         android:text="Roadtrip"
+        app:layout_constraintEnd_toStartOf="@id/btnRemove"
         app:layout_constraintStart_toEndOf="@id/checkBoxBucketItem" />
 
     <TextView
         android:id="@+id/tvBucketItemDescription"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_medium"
         android:layout_marginStart="@dimen/margin_medium"
         android:layout_marginTop="@dimen/margin_extra_small"
         android:text="A roadtrip in America"
+        app:layout_constraintEnd_toStartOf="@id/btnRemove"
         app:layout_constraintStart_toEndOf="@id/checkBoxBucketItem"
         app:layout_constraintTop_toBottomOf="@id/tvBucketItemTitle" />
+
+    <ImageView
+        android:id="@+id/btnRemove"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_small"
+        android:contentDescription="@string/remove_bucket_list_item"
+        android:src="@drawable/ic_remove_circle_black_24dp"
+        android:tint="@color/red"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

@@ -18,7 +18,6 @@ abstract class BaseActivity<T : ViewDataBinding, V : ViewModel>() : AppCompatAct
 		viewModel = ViewModelProviders.of(this).get(getVMClass())
 		initViewModelBinding()
 		title = getActivityTitle()
-
 	}
 
 	@LayoutRes

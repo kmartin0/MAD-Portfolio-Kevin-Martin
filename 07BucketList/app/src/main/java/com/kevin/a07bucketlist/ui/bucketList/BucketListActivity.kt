@@ -2,18 +2,20 @@ package com.kevin.a07bucketlist.ui.bucketList
 
 import android.arch.lifecycle.Observer
 import android.os.Bundle
-import android.support.v7.widget.DividerItemDecoration
+import android.util.Log
 import com.kevin.a07bucketlist.R
 import com.kevin.a07bucketlist.base.BaseActivity
 import com.kevin.a07bucketlist.databinding.ActivityBucketListBinding
 import com.kevin.a07bucketlist.util.CustomDividerItemDecoration
 import com.kevin.a07bucketlist.util.SnackBarHelper
 import kotlinx.android.synthetic.main.activity_bucket_list.*
-import org.jetbrains.anko.dimen
 
 class BucketListActivity : BaseActivity<ActivityBucketListBinding, BucketListViewModel>() {
 
-	private val bucketListAdapter = BucketListAdapter()
+	private val bucketListAdapter = BucketListAdapter(
+			{ viewModel.removeBucketListItem(it) },
+			{ viewModel.updateBucketListItem(it) }
+	)
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -22,7 +24,8 @@ class BucketListActivity : BaseActivity<ActivityBucketListBinding, BucketListVie
 
 		viewModel.bucketList.observe(this, Observer {
 			bucketListAdapter.updateList(it)
-			SnackBarHelper.showSnackBarMessage(this@BucketListActivity, "Bucket List Update")
+			Log.i("TAGZ", "$it")
+			SnackBarHelper.showSnackBarMessage(this@BucketListActivity, "Bucket List Update ${it?.size}")
 		})
 		fabAddBucketItem.setOnClickListener { SnackBarHelper.showSnackBarMessage(this@BucketListActivity, "Add New Bucket List Item") }
 	}
