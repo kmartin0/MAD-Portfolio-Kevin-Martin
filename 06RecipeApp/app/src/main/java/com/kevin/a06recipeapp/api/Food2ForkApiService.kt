@@ -8,10 +8,10 @@ import retrofit2.http.Query
 
 interface Food2ForkApiService {
 
-	@GET("get/?key=${Food2ForkApi.polyApiKey}")
+	@GET("get/?key=${Food2ForkApi.food2ForkApiKey}")
 	fun getRecipeDetails(@Query("rId") rId: String): Single<RecipeDetailsResponse>
 
-	@GET("search/?key=${Food2ForkApi.polyApiKey}")
+	@GET("search/?key=${Food2ForkApi.food2ForkApiKey}")
 	fun getTopRatedRecipes(): Single<TopRatedRecipesResponse>
 
 }

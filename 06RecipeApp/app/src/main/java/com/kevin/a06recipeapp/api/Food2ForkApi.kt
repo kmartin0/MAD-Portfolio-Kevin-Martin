@@ -8,7 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class Food2ForkApi {
 	companion object {
-		const val polyApiKey = "6e725377bedca4600ab85912459e00cf"
+		const val food2ForkApiKey = "6e725377bedca4600ab85912459e00cf"
 		fun create(): Food2ForkApiService {
 
 			val okHttpClient = OkHttpClient.Builder()
