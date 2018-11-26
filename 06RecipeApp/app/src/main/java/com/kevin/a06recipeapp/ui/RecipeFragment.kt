@@ -22,77 +22,84 @@ import kotlinx.android.synthetic.main.fragment_recipe.*
 
 class RecipeFragment : Fragment() {
 
-	private lateinit var food2ForkApiService: Food2ForkApiService
+    private lateinit var food2ForkApiService: Food2ForkApiService
+    private var disposable: Disposable? = null
 
-	companion object {
-		fun newInstance(recipe: Recipe): RecipeFragment {
-			val myFragment = RecipeFragment()
+    companion object {
+        fun newInstance(recipe: Recipe): RecipeFragment {
+            val myFragment = RecipeFragment()
 
-			val args = Bundle()
-			args.putParcelable(RECIPE_INTENT_EXTRA, recipe)
-			myFragment.arguments = args
+            val args = Bundle()
+            args.putParcelable(RECIPE_INTENT_EXTRA, recipe)
+            myFragment.arguments = args
 
-			return myFragment
-		}
-	}
+            return myFragment
+        }
+    }
 
-	override fun onCreateView(
-			inflater: LayoutInflater,
-			container: ViewGroup?,
-			savedInstanceState: Bundle?
-	): View = inflater.inflate(R.layout.fragment_recipe, container, false)
+    override fun onCreateView(
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
+    ): View = inflater.inflate(R.layout.fragment_recipe, container, false)
 
-	/**
-	 * Load the recipe details from the Food2Fork Api when the view is created.
-	 */
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		super.onViewCreated(view, savedInstanceState)
-		food2ForkApiService = Food2ForkApi.create()
-		val recipe = arguments!!.get(RECIPE_INTENT_EXTRA) as Recipe?
-		recipe?.let { getRecipeDetails(it) }
-	}
+    /**
+     * Load the recipe details from the Food2Fork Api when the view is created.
+     */
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        food2ForkApiService = Food2ForkApi.create()
+        val recipe = arguments!!.get(RECIPE_INTENT_EXTRA) as Recipe?
+        recipe?.let { getRecipeDetails(it) }
+    }
 
-	/**
-	 * Get the recipe details for the @recipe from the Food2Fork Api.
-	 */
-	private fun getRecipeDetails(recipe: Recipe) {
-		food2ForkApiService.getRecipeDetails(recipe.recipeId)
-				.observeOn(AndroidSchedulers.mainThread())
-				.subscribeOn(Schedulers.io())
-				.subscribe(object : SingleObserver<RecipeDetailsResponse> {
-					override fun onSuccess(t: RecipeDetailsResponse) {
-						when (t.error) {
-							null -> {
-								tvRecipeIngredients.text = parseIngredientsListToString(t.recipe.ingredients)
-								Glide.with(this@RecipeFragment).load(recipe.imageUrl).into(ivRecipe)
-								tvRecipeTitle.text = recipe.title
-								SnackBarHelper.showSnackBarMessage(activity as AppCompatActivity, "Successfully Retrieved Recipe Details")
-							}
-							else -> SnackBarHelper.showSnackBarMessage(activity as AppCompatActivity, "Error: ${t.error}")
-						}
-					}
+    /**
+     * Get the recipe details for the @recipe from the Food2Fork Api.
+     */
+    private fun getRecipeDetails(recipe: Recipe) {
+        food2ForkApiService.getRecipeDetails(recipe.recipeId)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(object : SingleObserver<RecipeDetailsResponse> {
+                    override fun onSuccess(t: RecipeDetailsResponse) {
+                        when (t.error) {
+                            null -> {
+                                tvRecipeIngredients.text = parseIngredientsListToString(t.recipe.ingredients)
+                                Glide.with(this@RecipeFragment).load(recipe.imageUrl).into(ivRecipe)
+                                tvRecipeTitle.text = recipe.title
+                                SnackBarHelper.showSnackBarMessage(activity as AppCompatActivity, "Successfully Retrieved Recipe Details")
+                            }
+                            else -> SnackBarHelper.showSnackBarMessage(activity as AppCompatActivity, "Error: ${t.error}")
+                        }
+                    }
 
-					override fun onSubscribe(d: Disposable) {
-						SnackBarHelper.showSnackBarMessage(activity as AppCompatActivity, "Loading Recipe Details...")
-					}
+                    override fun onSubscribe(d: Disposable) {
+                        disposable = d
+                        SnackBarHelper.showSnackBarMessage(activity as AppCompatActivity, "Loading Recipe Details...")
+                    }
 
-					override fun onError(e: Throwable) {
-						SnackBarHelper.showSnackBarMessage(activity as AppCompatActivity, "Error: ${e.message}")
-						e.printStackTrace()
-					}
+                    override fun onError(e: Throwable) {
+                        SnackBarHelper.showSnackBarMessage(activity as AppCompatActivity, "Error: ${e.message}")
+                        e.printStackTrace()
+                    }
 
-				})
-	}
+                })
+    }
 
-	/**
-	 * Add a new line after each ingredient
-	 */
-	private fun parseIngredientsListToString(ingredients: List<String>): String {
-		var tmpIngredients = ""
-		for (ingredient in ingredients) {
-			tmpIngredients += "\t-\t$ingredient \n"
-		}
-		return tmpIngredients
-	}
+    /**
+     * Add a new line after each ingredient
+     */
+    private fun parseIngredientsListToString(ingredients: List<String>): String {
+        var tmpIngredients = ""
+        for (ingredient in ingredients) {
+            tmpIngredients += "\t-\t$ingredient \n"
+        }
+        return tmpIngredients
+    }
+
+    override fun onStop() {
+        super.onStop()
+        disposable?.dispose()
+    }
 
 }
